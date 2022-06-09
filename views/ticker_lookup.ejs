@@ -4,8 +4,18 @@
 
 <div class="container">
     <br>
-    <h4>(<%= profile.ticker %>) <%= profile.name %> - $<%= quote.c %></h4>
-    <p><%= profile.exchange %> </p>
+    <h4>(<%= profile.ticker %>) <%= profile.name %> - $<%= quote.c %> <span class="<%= (quote.d <= 0 ? "neg-change" : "pos-change") %>"><%= quote.d %></span></h4>
+    <p>
+        <%= profile.exchange %><br><br>
+        <div class="btn-group" role="group">
+            <a class="btn btn-sm btn-info" href="/add/<%= profile.ticker %>">Add to portfolio</a>
+            <button class="btn btn-sm btn-outline-info"><i class="bi bi-eye-fill"></i></button>
+        </div>
+
+        <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= profile.ticker %>" target="_blank"><%= profile.ticker %> on Yahoo Finance</a>
+
+    </p>
+
 
     <br>
     <h4>News</h4>

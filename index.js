@@ -9,8 +9,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'))
 
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-api_key.apiKey = "sandbox_cah450qad3i90t1a44ag"
-// api_key.apiKey = "cah450qad3i90t1a44a0"
+// api_key.apiKey = "sandbox_cah450qad3i90t1a44ag"
+api_key.apiKey = "cah450qad3i90t1a44a0"
 const finnhubClient = new finnhub.DefaultApi()
 
 function getDate (addDays) {
@@ -34,17 +34,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/stocks/:ticker', async (req, res) => {
-    const { ticker } = req.params;
+    let { ticker } = req.params
     let quote, profile, news
+    ticker = ticker.toUpperCase()
 
-    await new Promise((resolve, reject) => {
-        finnhubClient.quote(ticker, (error, data, response) => {
-            quote = data
-            resolve()
-        })
-    })
-
-    
     await new Promise((resolve, reject) => {
         finnhubClient.companyProfile2({'symbol': ticker}, (error, data, response) => {
             profile = data
@@ -56,7 +49,14 @@ app.get('/stocks/:ticker', async (req, res) => {
         res.render('ticker_notfound', { ticker });
         return    
     }
-
+    
+    await new Promise((resolve, reject) => {
+        finnhubClient.quote(ticker, (error, data, response) => {
+            quote = data
+            resolve()
+        })
+    })  
+    
     await new Promise((resolve, reject) => {
         finnhubClient.companyNews(ticker, getDate(-1), getDate(0), (error, data, response) => {
             news = data

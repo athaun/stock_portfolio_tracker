@@ -19,3 +19,15 @@ body, .container {
     text-decoration: none;
     color: lightblue;
 }
+
+.neg-change, .pos-change {
+    font-size: 15px;
+}
+
+.neg-change {
+    color: red;
+}
+
+.pos-change {
+    color: green;
+}
