@@ -1,0 +1,21 @@
+body, .container {
+    background: #222529;
+    color: white;
+}
+
+.article div {
+    color: lightgray;
+    background-color: rgb(56, 56, 56);
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.article h6 {
+    color: rgb(128, 128, 128);
+}
+
+.article:hover, .article div:hover {
+    text-decoration: none;
+    color: lightblue;
+}
