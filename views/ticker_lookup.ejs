@@ -2,6 +2,21 @@
 
 <%- include('partials/navbar') %>
 
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-stock.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
+
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+
+<link href="https://cdn.anychart.com/releases/8.10.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+<link href="https://cdn.anychart.com/releases/8.10.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+
+<script src="/js/anychart_dark_theme.js"></script>
+
+
+
+
 <div class="container">
     <br>
     <h4>(<%= profile.ticker %>) <%= profile.name %> - $<%= quote.c %> <span class="<%= (quote.d <= 0 ? "neg-change" : "pos-change") %>"><%= quote.d %></span></h4>
@@ -15,6 +30,66 @@
         <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= profile.ticker %>" target="_blank"><%= profile.ticker %> on Yahoo Finance</a>
 
     </p>
+    <br>
+
+    <div id="chart-container"></div>  
+<br>
+    <script>
+        let history = String(`<%=history%>`).slice(36, -1)
+
+        anychart.onDocumentReady(function () {
+            anychart.data.loadCsvFile(
+                null,
+                function (data) {
+                // create data table on loaded data
+                var dataTable = anychart.data.table();
+                dataTable.addData(history);
+
+                // map loaded data for the candlestick series
+                var mapping = dataTable.mapAs({
+                    open: 1,
+                    high: 2,
+                    low: 3,
+                    close: 4
+                });
+
+                // create stock chart
+                var chart = anychart.stock()
+                anychart.theme('darkTurquoise');
+                
+                // create first plot on the chart
+                var plot = chart.plot(0);
+                
+                var series = plot.candlestick(mapping).name("<%= profile.ticker %>");
+                plot.yAxis(false);
+                plot.legend(false)
+                // create scroller series with mapped data
+                chart.scroller().candlestick(mapping)
+
+                // create range picker
+                var rangePicker = anychart.ui.rangePicker();
+                
+                // init range picker
+                rangePicker.render(chart);
+
+                // create range selector
+                var rangeSelector = anychart.ui.rangeSelector();
+                
+                // init range selector
+                rangeSelector.render(chart);
+            
+                
+                // set container id for the chart
+                chart.container('chart-container');
+                
+                // initiate chart drawing
+                chart.draw();
+                }
+            );
+        });
+    
+    </script>
+
 
 
     <br>
@@ -29,6 +104,6 @@
                 <p><%= news[i].summary %></p>
             </div>
         </a>
-    <% } %> 
+    <% } %>
 </div>
 <%- include('partials/footer') %>

@@ -36,3 +36,30 @@ body, .container {
     border-color: #222529;
     background-color: #222529; 
 }
+
+#chart-container {
+    height: 40vh;
+}
+
+#chart-container > div {
+    background: #343A40;
+    border-radius: 5px;
+}
+
+#chart-container > div > div.anychart-range-selector.anychart-range-selector-inside > button, #chart-container > div > div.anychart-range-picker.anychart-range-picker-inside > input {
+    background: #222529;
+    color: darkgrey;
+    border: none !important;
+
+}
+
+.anychart-button-standard.anychart-button-checked {
+    background: #222529;
+    color: white !important;
+    border: none !important;
+    outline: none;
+}
+
+.anychart-credits, #chart-container > div > div.anychart-control.anychart-plot-controls {
+    display: none;
+}

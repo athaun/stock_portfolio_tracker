@@ -2,6 +2,7 @@ const express = require('express');
 const finnhub = require('finnhub');
 const app = express();
 const path = require('path');
+const axios = require('axios');
 
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -12,6 +13,12 @@ const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 // api_key.apiKey = "sandbox_cah450qad3i90t1a44ag"
 api_key.apiKey = "cah450qad3i90t1a44a0"
 const finnhubClient = new finnhub.DefaultApi()
+
+// AlphaV: L9WXYEWKSS6Q2DIR
+// 
+
+
+
 
 function getDate (addDays) {
     const date = new Date();
@@ -35,7 +42,7 @@ app.get('/', (req, res) => {
 
 app.get('/stocks/:ticker', async (req, res) => {
     let { ticker } = req.params
-    let quote, profile, news
+    let quote, profile, news, history
     ticker = ticker.toUpperCase()
 
     await new Promise((resolve, reject) => {
@@ -62,9 +69,20 @@ app.get('/stocks/:ticker', async (req, res) => {
             news = data
             resolve()
         });
+    })
+
+    await new Promise((resolve, reject) => {
+        axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=full&datatype=csv&apikey=L9WXYEWKSS6Q2DIR`)
+        .then(res => {
+            history = res.data;
+            resolve()
+        }).catch(error => {
+            console.error(error);
+            resolve()
+        });
     })   
 
-    res.render('ticker_lookup', { quote, profile, news });    
+    res.render('ticker_lookup', { quote, profile, news, history });    
 })
 
 app.listen(8090, () => {
