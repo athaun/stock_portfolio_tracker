@@ -14,14 +14,12 @@
 
 <script src="/js/anychart_dark_theme.js"></script>
 
-
-
-
 <div class="container">
+    <br>
     <br>
     <h4>(<%= profile.ticker %>) <%= profile.name %> - $<%= quote.c %> <span class="<%= (quote.d <= 0 ? "neg-change" : "pos-change") %>"><%= quote.d %></span></h4>
     <p>
-        <%= profile.exchange %><br><br>
+        <%= profile.exchange %><br>
         <div class="btn-group" role="group">
             <a class="btn btn-sm btn-info" href="/add/<%= profile.ticker %>">Add to portfolio</a>
             <button class="btn btn-sm btn-outline-info"><i class="bi bi-eye-fill"></i></button>
@@ -33,67 +31,9 @@
     <br>
 
     <div id="chart-container"></div>  
-<br>
-    <script>
-        let history = String(`<%=history%>`).slice(36, -1)
-
-        anychart.onDocumentReady(function () {
-            anychart.data.loadCsvFile(
-                null,
-                function (data) {
-                // create data table on loaded data
-                var dataTable = anychart.data.table();
-                dataTable.addData(history);
-
-                // map loaded data for the candlestick series
-                var mapping = dataTable.mapAs({
-                    open: 1,
-                    high: 2,
-                    low: 3,
-                    close: 4
-                });
-
-                // create stock chart
-                var chart = anychart.stock()
-                anychart.theme('darkTurquoise');
-                
-                // create first plot on the chart
-                var plot = chart.plot(0);
-                
-                var series = plot.candlestick(mapping).name("<%= profile.ticker %>");
-                plot.yAxis(false);
-                plot.legend(false)
-                // create scroller series with mapped data
-                chart.scroller().candlestick(mapping)
-
-                // create range picker
-                var rangePicker = anychart.ui.rangePicker();
-                
-                // init range picker
-                rangePicker.render(chart);
-
-                // create range selector
-                var rangeSelector = anychart.ui.rangeSelector();
-                
-                // init range selector
-                rangeSelector.render(chart);
-            
-                
-                // set container id for the chart
-                chart.container('chart-container');
-                
-                // initiate chart drawing
-                chart.draw();
-                }
-            );
-        });
-    
-    </script>
-
-
-
     <br>
-    <h4>News</h4>
+    <br>
+    <h4><%= news.length >= 1 ? "News" : "" %></h4>
     <br>
     <% for (let i in news) { %>
         <a href="<%= news[i].url %>" target="_blank" class="article">
@@ -106,4 +46,77 @@
         </a>
     <% } %>
 </div>
+
+<script>
+    function getDate (addDays) {
+        const date = new Date();
+        date.setDate(date.getDate() + addDays);
+
+        let year = date.getUTCFullYear();
+        let month = date.getUTCMonth() + 1;
+        let day = date.getUTCDate();
+
+        month = String(month).padStart(2, '0')
+        day = String(day).padStart(2, '0')
+
+        const str = `${year}-${month}-${day}`;
+
+        return str
+    }
+
+    let history = String(`<%=history%>`).slice(36, -1)
+
+    anychart.onDocumentReady(function () {
+        anychart.data.loadCsvFile(
+            null,
+            function (data) {
+            // create data table on loaded data
+            var dataTable = anychart.data.table();
+            dataTable.addData(history);
+
+            // map loaded data for the candlestick series
+            var mapping = dataTable.mapAs({
+                open: 1,
+                high: 2,
+                low: 3,
+                close: 4
+            });
+
+            // create stock chart
+            var chart = anychart.stock()
+            anychart.theme('darkTurquoise');
+            
+            // create first plot on the chart
+            var plot = chart.plot(0);
+            
+            var series = plot.candlestick(mapping).name("<%= profile.ticker %>");
+            plot.yAxis(false);
+            plot.legend(false)
+            // create scroller series with mapped data
+            chart.scroller().candlestick(mapping)
+
+            // create range picker
+            var rangePicker = anychart.ui.rangePicker();
+            chart.selectRange(getDate(-365), getDate(0));
+            
+            // init range picker
+            rangePicker.render(chart);
+
+            // create range selector
+            var rangeSelector = anychart.ui.rangeSelector();
+            
+            // init range selector
+            rangeSelector.render(chart);
+        
+            
+            // set container id for the chart
+            chart.container('chart-container');
+            
+            // initiate chart drawing
+            chart.draw();
+            }
+        );
+    });
+
+</script>
 <%- include('partials/footer') %>
