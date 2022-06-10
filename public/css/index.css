@@ -5,7 +5,7 @@ body, .container {
 
 .article div {
     color: lightgray;
-    background-color: rgb(56, 56, 56);
+    background-color: #343A40;
     padding: 20px;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -30,4 +30,9 @@ body, .container {
 
 .pos-change {
     color: green;
+}
+
+#ticker-search-input {
+    border-color: #222529;
+    background-color: #222529; 
 }
