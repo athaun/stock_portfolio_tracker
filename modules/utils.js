@@ -1,3 +1,10 @@
+const finnhub = require('finnhub');
+const api_key = finnhub.ApiClient.instance.authentications['api_key'];
+api_key.apiKey = "cah450qad3i90t1a44a0"
+// api_key.apiKey = "sandbox_cah450qad3i90t1a44ag"
+// AlphaV: L9WXYEWKSS6Q2DIR
+const finnhubClient = new finnhub.DefaultApi()
+
 function getDate (addDays) {
     const date = new Date();
     date.setDate(date.getDate() + addDays);
@@ -15,5 +22,6 @@ function getDate (addDays) {
 }
 
 module.exports = {
-    getDate
+    getDate,
+    finnhubClient
 }

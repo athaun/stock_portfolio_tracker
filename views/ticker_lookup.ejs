@@ -49,7 +49,7 @@
     document.querySelector("#add-watchlist").addEventListener("click", e => {
             let xhr = new XMLHttpRequest()
             
-            xhr.open('POST', "/add/watchlist", true)
+            xhr.open('POST', "/lists/watchlist", true)
             xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
             xhr.send(JSON.stringify({
                 ticker: "<%= profile.ticker %>"
@@ -61,7 +61,6 @@
                 }
             }
     })
-
 
     function getDate (addDays) {
         const date = new Date();
