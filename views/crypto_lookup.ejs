@@ -1,0 +1,137 @@
+<%- include('partials/head') %>
+
+<%- include('partials/navbar') %>
+
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-stock.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
+<link href="https://cdn.anychart.com/releases/8.10.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+<link href="https://cdn.anychart.com/releases/8.10.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+<script src="/js/anychart_dark_theme.js"></script>
+
+<div class="container">
+    <br>
+    <br>
+    <h4>(<%= profile.ticker %>) <%= profile.name %> - $<%= quote.c %> <span class="<%= (quote.d <= 0 ? "neg-change" : "pos-change") %>"><%= quote.d %></span></h4>
+    <p>
+        <%= profile.exchange %><br>
+        <div class="btn-group" role="group">
+            <a class="btn btn-sm btn-info" href="/add/<%= profile.ticker %>">Add to portfolio</a>
+            <button class="btn btn-sm btn-outline-info" id="add-watchlist"><i class="bi bi-eye-fill"></i></button>
+        </div>
+
+        <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= profile.ticker %>" target="_blank"><%= profile.ticker %> on Yahoo Finance</a>
+
+    </p>
+    <br>
+
+    <div id="chart-container"></div>  
+    <br>
+    <br>
+    <h4><%= news.length >= 1 ? "News" : "" %></h4>
+    <br>
+    <% for (let i in news) { %>
+        <a href="<%= news[i].url %>" target="_blank" class="article">
+            <div class="container">
+                <h4><%= news[i].headline %></h4>
+                <% let publishDate = new Date(news[i].datetime * 1000).toLocaleString() %> 
+                <h6><%= news[i].source %> - <%= publishDate %></h6>
+                <p><%= news[i].summary %></p>
+            </div>
+        </a>
+    <% } %>
+</div>
+
+<script>
+
+    document.querySelector("#add-watchlist").addEventListener("click", e => {
+            let xhr = new XMLHttpRequest()
+            
+            xhr.open('POST', "/add/watchlist", true)
+            xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+            xhr.send(JSON.stringify({
+                ticker: "<%= profile.ticker %>"
+            }))
+            
+            xhr.onload = function () {
+                if(xhr.status === 201) {
+                    console.log("Post successfully created!") 
+                }
+            }
+    })
+
+
+    function getDate (addDays) {
+        const date = new Date();
+        date.setDate(date.getDate() + addDays);
+
+        let year = date.getUTCFullYear();
+        let month = date.getUTCMonth() + 1;
+        let day = date.getUTCDate();
+
+        month = String(month).padStart(2, '0')
+        day = String(day).padStart(2, '0')
+
+        const str = `${year}-${month}-${day}`;
+
+        return str
+    }
+
+    let history = String(`<%=history%>`).slice(36, -1)
+
+    anychart.onDocumentReady(function () {
+        anychart.data.loadCsvFile(
+            null,
+            function (data) {
+            // create data table on loaded data
+            var dataTable = anychart.data.table();
+            dataTable.addData(history);
+
+            // map loaded data for the candlestick series
+            var mapping = dataTable.mapAs({
+                open: 1,
+                high: 2,
+                low: 3,
+                close: 4
+            });
+
+            // create stock chart
+            var chart = anychart.stock()
+            anychart.theme('darkTurquoise');
+            
+            // create first plot on the chart
+            var plot = chart.plot(0);
+            
+            var series = plot.candlestick(mapping).name("<%= profile.ticker %>");
+            plot.yAxis(false);
+            plot.legend(false)
+            // create scroller series with mapped data
+            chart.scroller().candlestick(mapping)
+
+            // create range picker
+            var rangePicker = anychart.ui.rangePicker();
+            chart.selectRange(getDate(-365), getDate(0));
+            
+            // init range picker
+            rangePicker.render(chart);
+
+            // create range selector
+            var rangeSelector = anychart.ui.rangeSelector();
+            
+            // init range selector
+            rangeSelector.render(chart);
+        
+            
+            // set container id for the chart
+            chart.container('chart-container');
+            
+            // initiate chart drawing
+            chart.draw();
+            }
+        );
+    });
+
+</script>
+<%- include('partials/footer') %>
