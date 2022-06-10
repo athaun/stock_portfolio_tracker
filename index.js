@@ -3,11 +3,14 @@ const finnhub = require('finnhub');
 const app = express();
 const path = require('path');
 const axios = require('axios');
+const utils = require('./utils.js')
 
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
 
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 // api_key.apiKey = "sandbox_cah450qad3i90t1a44ag"
@@ -15,63 +18,53 @@ api_key.apiKey = "cah450qad3i90t1a44a0"
 const finnhubClient = new finnhub.DefaultApi()
 
 // AlphaV: L9WXYEWKSS6Q2DIR
-// 
-
-
-
-
-function getDate (addDays) {
-    const date = new Date();
-    date.setDate(date.getDate() + addDays);
-
-    let year = date.getUTCFullYear();
-    let month = date.getUTCMonth() + 1;
-    let day = date.getUTCDate();
-
-    month = String(month).padStart(2, '0')
-    day = String(day).padStart(2, '0')
-
-    const str = `${year}-${month}-${day}`;
-
-    return str
-}
 
 app.get('/', (req, res) => {
     res.render('home')
+})
+
+app.post('/add/:list', (req, res) => {
+    let { list } = req.params
+    if (list == "watchlist") {
+        res.send({res: `Added ${req.body.ticker} to your watchlist.`})
+    }    
 })
 
 app.get('/stocks/:ticker', async (req, res) => {
     let { ticker } = req.params
     let quote, profile, news, history
     ticker = ticker.toUpperCase()
-
-    await new Promise((resolve, reject) => {
+    
+    let requests = []
+    
+    requests.push(new Promise((resolve, reject) => {
         finnhubClient.companyProfile2({'symbol': ticker}, (error, data, response) => {
             profile = data
             resolve()
         })
-    })
+    }))
     
-    if (!profile.name) {
-        res.render('ticker_notfound', { ticker });
-        return    
-    }
+    // TODO: remove this in favor of a proper search system to find cryptos and tickers by company names
+    // if (!profile.name) {
+    //     res.render('ticker_notfound', { ticker });
+    //     return    
+    // }
     
-    await new Promise((resolve, reject) => {
+    requests.push(new Promise((resolve, reject) => {
         finnhubClient.quote(ticker, (error, data, response) => {
             quote = data
             resolve()
         })
-    })  
+    }))
     
-    await new Promise((resolve, reject) => {
-        finnhubClient.companyNews(ticker, getDate(-1), getDate(0), (error, data, response) => {
+    requests.push(new Promise((resolve, reject) => {
+        finnhubClient.companyNews(ticker, utils.getDate(-1), utils.getDate(0), (error, data, response) => {
             news = data
             resolve()
         });
-    })
+    }))
 
-    await new Promise((resolve, reject) => {
+    requests.push(new Promise((resolve, reject) => {
         axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=full&datatype=csv&apikey=L9WXYEWKSS6Q2DIR`)
         .then(res => {
             history = res.data;
@@ -80,11 +73,19 @@ app.get('/stocks/:ticker', async (req, res) => {
             console.error(error);
             resolve()
         });
-    })   
+    }))
+    
+    await Promise.all(requests)
+
+    // console.log(history)
 
     res.render('ticker_lookup', { quote, profile, news, history });    
 })
 
+app.get('/cryptos/:name', async (req, res) => {
+    // res.render('ticker_lookup', { quote, profile, news, history });    
+})
+
 app.listen(8090, () => {
-    console.log("Listening on 8080")
+    console.log("Listening on 8090")
 })

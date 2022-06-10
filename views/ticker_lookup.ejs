@@ -5,13 +5,10 @@
 <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
 <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-stock.min.js"></script>
 <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
-
 <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
 <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-exports.min.js"></script>
-
 <link href="https://cdn.anychart.com/releases/8.10.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
 <link href="https://cdn.anychart.com/releases/8.10.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
-
 <script src="/js/anychart_dark_theme.js"></script>
 
 <div class="container">
@@ -22,7 +19,7 @@
         <%= profile.exchange %><br>
         <div class="btn-group" role="group">
             <a class="btn btn-sm btn-info" href="/add/<%= profile.ticker %>">Add to portfolio</a>
-            <button class="btn btn-sm btn-outline-info"><i class="bi bi-eye-fill"></i></button>
+            <button class="btn btn-sm btn-outline-info" id="add-watchlist"><i class="bi bi-eye-fill"></i></button>
         </div>
 
         <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= profile.ticker %>" target="_blank"><%= profile.ticker %> on Yahoo Finance</a>
@@ -48,6 +45,24 @@
 </div>
 
 <script>
+
+    document.querySelector("#add-watchlist").addEventListener("click", e => {
+            let xhr = new XMLHttpRequest()
+            
+            xhr.open('POST', "/add/watchlist", true)
+            xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+            xhr.send(JSON.stringify({
+                ticker: "<%= profile.ticker %>"
+            }))
+            
+            xhr.onload = function () {
+                if(xhr.status === 201) {
+                    console.log("Post successfully created!") 
+                }
+            }
+    })
+
+
     function getDate (addDays) {
         const date = new Date();
         date.setDate(date.getDate() + addDays);
@@ -67,9 +82,7 @@
     let history = String(`<%=history%>`).slice(36, -1)
 
     anychart.onDocumentReady(function () {
-        anychart.data.loadCsvFile(
-            null,
-            function (data) {
+
             // create data table on loaded data
             var dataTable = anychart.data.table();
             dataTable.addData(history);
@@ -114,8 +127,7 @@
             
             // initiate chart drawing
             chart.draw();
-            }
-        );
+
     });
 
 </script>
