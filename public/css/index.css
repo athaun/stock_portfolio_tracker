@@ -63,3 +63,25 @@ body, .container {
 .anychart-credits, #chart-container > div > div.anychart-control.anychart-plot-controls {
     display: none;
 }
+
+#list-title {
+    text-transform: capitalize;
+}
+
+
+#list>a>div {
+    color: lightgray;
+    background-color: #343A40;
+    padding: 14px 20px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+#list>a:hover, #list>a>div:hover {
+    text-decoration: none;
+    color: lightblue;
+}
+
+#col-titles {
+    padding: 10px 20px;
+}

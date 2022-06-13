@@ -24,12 +24,6 @@ router.get('/:ticker', async (req, res) => {
         })
     }))
     
-    // TODO: remove this in favor of a proper search system to find cryptos and tickers by company names
-    // if (!profile.name) {
-    //     res.render('ticker_notfound', { ticker });
-    //     return    
-    // }
-    
     requests.push(new Promise((resolve, reject) => {
         utils.finnhubClient.quote(ticker, (error, data, response) => {
             quote = data

@@ -1,0 +1,107 @@
+<%- include('partials/head')%>
+<%- include('partials/navbar')%>
+
+<div class="container">
+    <br>
+    <br>
+    <h4 id="list-title"><%= list %></h4>
+    <br>
+
+    <% if (list != "watchlist") { %>
+        <div id="col-titles">
+            <div class="row">
+                <div class="col">
+                    Ticker
+                </div>
+                <div class="col">
+                    Price/unit
+                </div>
+                <div class="col">
+                    Total Gain ($)
+                </div>
+                <div class="col">
+                    Total Gain (%)
+                </div>
+                <div class="col">
+                    Today's Gain ($)
+                </div>
+                <div class="col">
+                    Today's Gain (%)
+                </div>
+            </div>
+        </div>
+
+        <div id="list">
+            <% for (let i of assets) { %>
+                <a href="/stocks/<%= i.ticker %>" target="_blank">
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <%= i.ticker %>
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    <% } else { %> 
+        <div id="col-titles">
+            <div class="row">
+                <div class="col">
+                    Ticker
+                </div>
+                <div class="col">
+                    Price/unit
+                </div>
+                <div class="col">
+                    Total Gain ($)
+                </div>
+                <div class="col">
+                    Total Gain (%)
+                </div>
+                
+            </div>
+        </div>
+    
+        <div id="list">
+            <% for (let i of assets) { %>
+                <a href="/stocks/<%= i.ticker %>" target="_blank">
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <%= i.ticker %>
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                            <div class="col">
+                                dummy
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    <% } %> 
+</div>
+
+
+<%- include('partials/footer')%>
