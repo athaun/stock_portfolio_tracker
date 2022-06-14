@@ -118,11 +118,13 @@ input#price, input#quantity {
 
     body {
         overflow-x: hidden !important;
+        overflow-y: scroll;
     }
 
     div#list-container {
         width: 100%;
         overflow-x: auto;
+        overflow-y: scroll;
         position: fixed;
         margin-right: 5px;
     }
@@ -131,7 +133,6 @@ input#price, input#quantity {
         width: 560px;
         /* padding: 0; */
         overflow-x: auto;
-        overflow-y: hidden;
         white-space: nowrap;
     }
 }
