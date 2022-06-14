@@ -18,8 +18,20 @@
     <p>
         <%= profile.exchange %><br>
         <div class="btn-group" role="group">
-            <a class="btn btn-sm btn-info" href="/lists/portfolio/add/<%= ticker %>">Add to portfolio</a>
-            <button class="btn btn-sm btn-outline-info" id="add-watchlist"><i class="bi bi-eye-fill"></i></button>
+            <a class="btn btn-sm btn-info" id="portfolio-add-link" href="/lists/portfolio/add/<%= ticker %>">
+                <% if (inPortfolio) { %>
+                    <span id="portfolio-add-status" class="remove-asset">Remove from portfolio</span>
+                <% } else { %>
+                    <span id="portfolio-add-status">Add to portfolio</span>
+                <% } %>
+            </a>
+            <button class="btn btn-sm btn-outline-info" id="toggle-watchlist">
+                <% if (inWatchlist) { %>
+                    <i id="watchlist-icon" class="bi bi-eye-slash-fill"></i>
+                <% } else { %>
+                    <i id="watchlist-icon" class="bi bi-eye-fill"></i>
+                <% } %>
+            </button>
         </div>
 
         <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= ticker %>" target="_blank"><%= ticker %> on Yahoo Finance</a>
@@ -45,19 +57,50 @@
 </div>
 
 <script>
+   
+   let xhr = new XMLHttpRequest()
 
-    document.querySelector("#add-watchlist").addEventListener("click", e => {
-        let xhr = new XMLHttpRequest()
-        
-        xhr.open('POST', "/lists/watchlist", true)
+    document.querySelector("#portfolio-add-link").addEventListener("click", e => {
+        // Remove an asset from portfolio
+        if (document.querySelector("#portfolio-add-status").classList.contains("remove-asset")) {
+            e.preventDefault()
+            // In portfolio
+            xhr.open('DELETE', "/lists/portfolio", true)
+            xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+            xhr.send(JSON.stringify({
+                ticker: "<%= ticker %>"
+            }))
+            
+            xhr.onload = function () {
+                if(xhr.status === 200) {
+                    // Success
+                    document.querySelector("#portfolio-add-status").classList.toggle("remove")
+                    document.querySelector("#portfolio-add-status").innerHTML = "Add to portfolio"
+                }
+            }
+        }
+        // No else because it redirects to another page anyways and the status is checked on initial render
+    })
+
+    document.querySelector("#toggle-watchlist").addEventListener("click", e => {
+        // Toggle an asset in the watchlist
+        if (document.querySelector("#watchlist-icon").classList.contains("bi-eye-fill")) {
+            // Not in watchlist
+            xhr.open('POST', "/lists/watchlist", true)
+        } else {
+            // In watchlist
+            xhr.open('DELETE', "/lists/watchlist", true)
+        }
         xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
         xhr.send(JSON.stringify({
             ticker: "<%= ticker %>"
         }))
         
         xhr.onload = function () {
-            if(xhr.status === 201) {
-                console.log("Post successfully created!") 
+            if(xhr.status === 200) {
+                // Success
+                document.querySelector("#watchlist-icon").classList.toggle("bi-eye-slash-fill")
+                document.querySelector("#watchlist-icon").classList.toggle("bi-eye-fill")
             }
         }
     })
@@ -78,56 +121,56 @@
         return str
     }
 
-    let history = String(`<%=history%>`).slice(36, -1)
+    // let history = String(`<%=history%>`).slice(36, -1)
 
-    anychart.onDocumentReady(function () {
+    // anychart.onDocumentReady(function () {
 
-            // create data table on loaded data
-            var dataTable = anychart.data.table();
-            dataTable.addData(history);
+    //         // create data table on loaded data
+    //         var dataTable = anychart.data.table();
+    //         dataTable.addData(history);
 
-            // map loaded data for the candlestick series
-            var mapping = dataTable.mapAs({
-                open: 1,
-                high: 2,
-                low: 3,
-                close: 4
-            });
+    //         // map loaded data for the candlestick series
+    //         var mapping = dataTable.mapAs({
+    //             open: 1,
+    //             high: 2,
+    //             low: 3,
+    //             close: 4
+    //         });
 
-            // create stock chart
-            var chart = anychart.stock()
-            anychart.theme('darkTurquoise');
+    //         // create stock chart
+    //         var chart = anychart.stock()
+    //         anychart.theme('darkTurquoise');
             
-            // create first plot on the chart
-            var plot = chart.plot(0);
+    //         // create first plot on the chart
+    //         var plot = chart.plot(0);
             
-            var series = plot.candlestick(mapping).name("<%= ticker %>");
-            plot.yAxis(false);
-            plot.legend(false)
-            // create scroller series with mapped data
-            chart.scroller().candlestick(mapping)
+    //         var series = plot.candlestick(mapping).name("<%= ticker %>");
+    //         plot.yAxis(false);
+    //         plot.legend(false)
+    //         // create scroller series with mapped data
+    //         chart.scroller().candlestick(mapping)
 
-            // create range picker
-            var rangePicker = anychart.ui.rangePicker();
-            chart.selectRange(getDate(-365), getDate(0));
+    //         // create range picker
+    //         var rangePicker = anychart.ui.rangePicker();
+    //         chart.selectRange(getDate(-365), getDate(0));
             
-            // init range picker
-            rangePicker.render(chart);
+    //         // init range picker
+    //         rangePicker.render(chart);
 
-            // create range selector
-            var rangeSelector = anychart.ui.rangeSelector();
+    //         // create range selector
+    //         var rangeSelector = anychart.ui.rangeSelector();
             
-            // init range selector
-            rangeSelector.render(chart);
+    //         // init range selector
+    //         rangeSelector.render(chart);
         
             
-            // set container id for the chart
-            chart.container('chart-container');
+    //         // set container id for the chart
+    //         chart.container('chart-container');
             
-            // initiate chart drawing
-            chart.draw();
+    //         // initiate chart drawing
+    //         chart.draw();
 
-    });
+    // });
 
 </script>
 <%- include('partials/footer') %>

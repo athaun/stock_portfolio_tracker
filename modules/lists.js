@@ -120,8 +120,16 @@ router.patch('/:list', (req, res) => {
     res.send(`Route not yet implemented.`)
 })
 
-router.delete('/:list', (req, res) => {
-    res.send(`Route not yet implemented.`)
+router.delete('/:list', async (req, res) => {
+    let { assets: assetIds } = await List.findOne({ name: req.params.list })
+    let assets = await Asset.find({ _id: { $in: assetIds } })
+    for (let i in assets) {
+        if (assets[i].ticker == req.body.ticker) {
+            await Asset.findByIdAndDelete(assets[i]._id)
+            res.send(`Deleted asset: ${assets[i]}`)
+            return
+        }
+    }
 })
 
 module.exports = router

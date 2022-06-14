@@ -18,15 +18,16 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 
-/* HOME PAGE */
-app.get('/', (req, res) => {
-    res.render('home')
-})
 
 app.use("/stocks", require("./modules/lookups"))
 app.use("/cryptos", require("./modules/lookups"))
 
 app.use("/lists", require("./modules/lists"))
+
+/* HOME PAGE */
+app.get('/', (req, res) => {
+    res.redirect("/lists/portfolio")
+})
 
 app.all("*", (req, res) => {
     res.render("error", { error: `The page you are looking for doesn't exist.` })
