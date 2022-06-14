@@ -28,6 +28,10 @@ app.use("/cryptos", require("./modules/lookups"))
 
 app.use("/lists", require("./modules/lists"))
 
+app.all("*", (req, res) => {
+    res.render("error", { error: `The page you are looking for doesn't exist.` })
+})
+
 app.listen(8090, () => {
     console.log("Listening")
 })

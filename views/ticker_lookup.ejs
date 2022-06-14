@@ -14,15 +14,15 @@
 <div class="container">
     <br>
     <br>
-    <h4>(<%= profile.ticker %>) <%= profile.name %> - $<%= quote.c %> <span class="<%= (quote.d <= 0 ? "neg-change" : "pos-change") %>"><%= quote.d %></span></h4>
+    <h4>(<%= ticker %>) <%= profile.name %> - $<%= quote.c %> <span class="<%= (quote.d <= 0 ? "neg-change" : "pos-change") %>"><%= quote.d %></span></h4>
     <p>
         <%= profile.exchange %><br>
         <div class="btn-group" role="group">
-            <a class="btn btn-sm btn-info" href="/add/<%= profile.ticker %>">Add to portfolio</a>
+            <a class="btn btn-sm btn-info" href="/lists/portfolio/add/<%= ticker %>">Add to portfolio</a>
             <button class="btn btn-sm btn-outline-info" id="add-watchlist"><i class="bi bi-eye-fill"></i></button>
         </div>
 
-        <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= profile.ticker %>" target="_blank"><%= profile.ticker %> on Yahoo Finance</a>
+        <a class="btn btn-sm btn-outline-info" href="https://finance.yahoo.com/quote/<%= ticker %>" target="_blank"><%= ticker %> on Yahoo Finance</a>
 
     </p>
     <br>
@@ -47,19 +47,19 @@
 <script>
 
     document.querySelector("#add-watchlist").addEventListener("click", e => {
-            let xhr = new XMLHttpRequest()
-            
-            xhr.open('POST', "/lists/watchlist", true)
-            xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
-            xhr.send(JSON.stringify({
-                ticker: "<%= profile.ticker %>"
-            }))
-            
-            xhr.onload = function () {
-                if(xhr.status === 201) {
-                    console.log("Post successfully created!") 
-                }
+        let xhr = new XMLHttpRequest()
+        
+        xhr.open('POST', "/lists/watchlist", true)
+        xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+        xhr.send(JSON.stringify({
+            ticker: "<%= ticker %>"
+        }))
+        
+        xhr.onload = function () {
+            if(xhr.status === 201) {
+                console.log("Post successfully created!") 
             }
+        }
     })
 
     function getDate (addDays) {
@@ -101,7 +101,7 @@
             // create first plot on the chart
             var plot = chart.plot(0);
             
-            var series = plot.candlestick(mapping).name("<%= profile.ticker %>");
+            var series = plot.candlestick(mapping).name("<%= ticker %>");
             plot.yAxis(false);
             plot.legend(false)
             // create scroller series with mapped data
