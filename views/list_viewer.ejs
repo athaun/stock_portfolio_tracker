@@ -4,10 +4,10 @@
 <div class="container">
     <br>
     <br>
-    <h4 id="list-title"><%= list %></h4>
+    <h4 id="list-title"><%= listName %></h4>
     <br>
 
-    <% if (list != "watchlist") { %>
+    <% if (listType == "portfolio") { %> <!-- Portfolio style render -->
         <div id="col-titles">
             <div class="row">
                 <div class="col">
@@ -17,49 +17,51 @@
                     Price/unit
                 </div>
                 <div class="col">
-                    Total Gain ($)
+                    Today's Change ($)
                 </div>
                 <div class="col">
-                    Total Gain (%)
+                    Today's Change (%)
                 </div>
                 <div class="col">
-                    Today's Gain ($)
+                    Total Change ($)
                 </div>
                 <div class="col">
-                    Today's Gain (%)
-                </div>
+                    Total Change (%)
+                </div>               
             </div>
         </div>
 
         <div id="list">
-            <% for (let i of assets) { %>
-                <a href="/stocks/<%= i.ticker %>" target="_blank">
+            <% for (let i in assets) { %>
+                <a href="/stocks/<%= assets[i].ticker %>" target="_blank">
                     <div>
                         <div class="row">
                             <div class="col">
-                                <%= i.ticker %>
+                                <%= assets[i].ticker %>
                             </div>
                             <div class="col">
-                                dummy
+                                $<%= quotes[i].c %>
                             </div>
                             <div class="col">
-                                dummy
+                                <span class="<%= (quotes[i].d <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].d %></span>
                             </div>
                             <div class="col">
-                                dummy
+                                <span class="<%= (quotes[i].dp <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].dp %>%</span>
                             </div>
                             <div class="col">
-                                dummy
+                                <% let totalGain = (quotes[i].c - assets[i].buyPrice) * assets[i].quantity %>
+                                <span class="<%= (totalGain <= 0 ? "neg-change" : "pos-change") %>"><%= totalGain.toFixed(2) %></span>
                             </div>
                             <div class="col">
-                                dummy
+                                <% let totalGainPercent = (quotes[i].c - assets[i].buyPrice) / assets[i].buyPrice * 100 %>
+                                <span class="<%= (totalGainPercent <= 0 ? "neg-change" : "pos-change") %>"><%= totalGainPercent.toFixed(2) %>%</span>
                             </div>
                         </div>
                     </div>
                 </a>
             <% } %>
         </div>
-    <% } else { %> 
+    <% } else { %> <!-- Watchlist style render -->
         <div id="col-titles">
             <div class="row">
                 <div class="col">
@@ -69,31 +71,31 @@
                     Price/unit
                 </div>
                 <div class="col">
-                    Total Gain ($)
+                    Total Change ($)
                 </div>
                 <div class="col">
-                    Total Gain (%)
+                    Total Change (%)
                 </div>
                 
             </div>
         </div>
     
         <div id="list">
-            <% for (let i of assets) { %>
-                <a href="/stocks/<%= i.ticker %>" target="_blank">
+            <% for (let i in assets) { %>
+                <a href="/stocks/<%= assets[i].ticker %>" target="_blank">
                     <div>
                         <div class="row">
                             <div class="col">
-                                <%= i.ticker %>
+                                <%= assets[i].ticker %>
                             </div>
                             <div class="col">
-                                dummy
+                                $<%= quotes[i].c %>
                             </div>
                             <div class="col">
-                                dummy
+                                <span class="<%= (quotes[i].d <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].d %>$</span>
                             </div>
                             <div class="col">
-                                dummy
+                                <span class="<%= (quotes[i].dp <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].dp %>%</span>
                             </div>
                         </div>
                     </div>

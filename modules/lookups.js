@@ -51,7 +51,7 @@ router.get('/:ticker', async (req, res) => {
     
     await Promise.all(requests)
 
-    res.render('ticker_lookup', { quote, profile, news, history });    
+    res.render('ticker_lookup', { ticker, quote, profile, news, history });    
 })
 
 router.get('/:name', async (req, res) => {

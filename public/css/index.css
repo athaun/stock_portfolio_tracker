@@ -64,6 +64,8 @@ body, .container {
     display: none;
 }
 
+/* List viewer */
+ 
 #list-title {
     text-transform: capitalize;
 }
@@ -84,4 +86,23 @@ body, .container {
 
 #col-titles {
     padding: 10px 20px;
+}
+
+/* Add form */
+
+input#price, input#quantity, button#submit {
+    width: 300px;
+}
+
+input#price, input#quantity {
+    background: #343A40;
+    border: #343A40;
+    color: lightgray;
+}
+
+#add-form {
+    width: 300px;
+    text-align: center;
+    padding: 0px;
+    margin: 0 auto;
 }

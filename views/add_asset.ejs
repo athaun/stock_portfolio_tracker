@@ -1,0 +1,51 @@
+<%- include('partials/head')%>
+
+<%- include('partials/navbar')%>
+
+<div id="add-form">
+    <br>
+    <br>
+    <h4>Add <%= ticker %> to <%= list %></h4>
+    <br>
+
+    <div>
+        <div>
+        </div>
+            <input type="number" id="price" class="form-control" placeholder="Buy price/unit" aria-label="Buy price">
+        <br>
+        <div>
+            <input type="number" id="quantity" class="form-control" placeholder="Quantity" aria-label="Quantity">
+        </div>
+        <br>
+        <div>
+            <button class="btn btn-info" id="submit">Submit</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.querySelector("#submit").addEventListener("click", e => {
+            e.preventDefault()
+            let xhr = new XMLHttpRequest()
+
+            let price = document.querySelector("#price").value
+            let quantity = document.querySelector("#quantity").value
+            
+            xhr.open('POST', "/lists/<%= list %>", true)
+            xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+            xhr.send(JSON.stringify({
+                ticker: "<%= ticker %>",
+                buyPrice: parseFloat(price),
+                quantity: parseFloat(quantity)
+            }))
+            
+            xhr.onload = function () {
+                if(xhr.status === 200) {
+                    console.log("Post successfully created!") 
+                    window.location = "/lists/<%= list %>"
+                }
+            }
+        })
+    </script>
+
+<%- include('partials/footer')%>
