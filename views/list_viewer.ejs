@@ -6,103 +6,104 @@
     <br>
     <h4 id="list-title"><%= listName %></h4>
     <br>
-
-    <% if (listType == "portfolio") { %> <!-- Portfolio style render -->
-        <div id="col-titles">
-            <div class="row">
-                <div class="col">
-                    Ticker
+    <div id="list-container">
+        <% if (listType == "portfolio") { %> <!-- Portfolio style render -->
+            <div id="col-titles">
+                <div class="row">
+                    <div class="col">
+                        Ticker
+                    </div>
+                    <div class="col">
+                        Price/unit
+                    </div>
+                    <div class="col">
+                        Today
+                    </div>
+                    <div class="col">
+                        Today
+                    </div>
+                    <div class="col">
+                        Total
+                    </div>
+                    <div class="col">
+                        Total
+                    </div>               
                 </div>
-                <div class="col">
-                    Price/unit
-                </div>
-                <div class="col">
-                    Today's Change ($)
-                </div>
-                <div class="col">
-                    Today's Change (%)
-                </div>
-                <div class="col">
-                    Total Change ($)
-                </div>
-                <div class="col">
-                    Total Change (%)
-                </div>               
             </div>
-        </div>
 
-        <div id="list">
-            <% for (let i in assets) { %>
-                <a href="/stocks/<%= assets[i].ticker %>" target="_blank">
-                    <div>
-                        <div class="row">
-                            <div class="col">
-                                <%= assets[i].ticker %>
-                            </div>
-                            <div class="col">
-                                $<%= quotes[i].c %>
-                            </div>
-                            <div class="col">
-                                <span class="<%= (quotes[i].d <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].d %></span>
-                            </div>
-                            <div class="col">
-                                <span class="<%= (quotes[i].dp <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].dp %>%</span>
-                            </div>
-                            <div class="col">
-                                <% let totalGain = (quotes[i].c - assets[i].buyPrice) * assets[i].quantity %>
-                                <span class="<%= (totalGain <= 0 ? "neg-change" : "pos-change") %>"><%= totalGain.toFixed(2) %></span>
-                            </div>
-                            <div class="col">
-                                <% let totalGainPercent = (quotes[i].c - assets[i].buyPrice) / assets[i].buyPrice * 100 %>
-                                <span class="<%= (totalGainPercent <= 0 ? "neg-change" : "pos-change") %>"><%= totalGainPercent.toFixed(2) %>%</span>
+            <div id="list">
+                <% for (let i in assets) { %>
+                    <a href="/stocks/<%= assets[i].ticker %>">
+                        <div>
+                            <div class="row">
+                                <div class="col">
+                                    <%= assets[i].ticker %>
+                                </div>
+                                <div class="col">
+                                    $<%= quotes[i].c %>
+                                </div>
+                                <div class="col">
+                                    <span class="<%= (quotes[i].d <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].d %></span>
+                                </div>
+                                <div class="col">
+                                    <span class="<%= (quotes[i].dp <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].dp.toFixed(2) %>%</span>
+                                </div>
+                                <div class="col">
+                                    <% let totalGain = (quotes[i].c - assets[i].buyPrice) * assets[i].quantity %>
+                                    <span class="<%= (totalGain <= 0 ? "neg-change" : "pos-change") %>"><%= totalGain.toFixed(2) %></span>
+                                </div>
+                                <div class="col">
+                                    <% let totalGainPercent = (quotes[i].c - assets[i].buyPrice) / assets[i].buyPrice * 100 %>
+                                    <span class="<%= (totalGainPercent <= 0 ? "neg-change" : "pos-change") %>"><%= totalGainPercent.toFixed(2) %>%</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            <% } %>
-        </div>
-    <% } else { %> <!-- Watchlist style render -->
-        <div id="col-titles">
-            <div class="row">
-                <div class="col">
-                    Ticker
-                </div>
-                <div class="col">
-                    Price/unit
-                </div>
-                <div class="col">
-                    Total Change ($)
-                </div>
-                <div class="col">
-                    Total Change (%)
-                </div>
-                
+                    </a>
+                <% } %>
             </div>
-        </div>
-    
-        <div id="list">
-            <% for (let i in assets) { %>
-                <a href="/stocks/<%= assets[i].ticker %>" target="_blank">
-                    <div>
-                        <div class="row">
-                            <div class="col">
-                                <%= assets[i].ticker %>
-                            </div>
-                            <div class="col">
-                                $<%= quotes[i].c %>
-                            </div>
-                            <div class="col">
-                                <span class="<%= (quotes[i].d <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].d %>$</span>
-                            </div>
-                            <div class="col">
-                                <span class="<%= (quotes[i].dp <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].dp %>%</span>
+        <% } else { %> <!-- Watchlist style render -->
+            <div id="col-titles">
+                <div class="row">
+                    <div class="col">
+                        Ticker
+                    </div>
+                    <div class="col">
+                        Price/unit
+                    </div>
+                    <div class="col">
+                        Today
+                    </div>
+                    <div class="col">
+                        Today
+                    </div>
+                    
+                </div>
+            </div>
+        
+            <div id="list">
+                <% for (let i in assets) { %>
+                    <a href="/stocks/<%= assets[i].ticker %>">
+                        <div>
+                            <div class="row">
+                                <div class="col">
+                                    <%= assets[i].ticker %>
+                                </div>
+                                <div class="col">
+                                    $<%= quotes[i].c %>
+                                </div>
+                                <div class="col">
+                                    <span class="<%= (quotes[i].d <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].d %>$</span>
+                                </div>
+                                <div class="col">
+                                    <span class="<%= (quotes[i].dp <= 0 ? "neg-change" : "pos-change") %>"><%= quotes[i].dp.toFixed(2) %>%</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            <% } %>
-        </div>
-    <% } %> 
+                    </a>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
 </div>
 
 

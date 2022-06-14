@@ -38,16 +38,16 @@ router.get('/:ticker', async (req, res) => {
         });
     }))
 
-    requests.push(new Promise((resolve, reject) => {
-        axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=full&datatype=csv&apikey=L9WXYEWKSS6Q2DIR`)
-        .then(res => {
-            history = res.data;
-            resolve()
-        }).catch(error => {
-            console.error(error);
-            resolve()
-        });
-    }))
+    // requests.push(new Promise((resolve, reject) => {
+    //     axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=full&datatype=csv&apikey=L9WXYEWKSS6Q2DIR`)
+    //     .then(res => {
+    //         history = res.data;
+    //         resolve()
+    //     }).catch(error => {
+    //         console.error(error);
+    //         resolve()
+    //     });
+    // }))
     
     await Promise.all(requests)
 

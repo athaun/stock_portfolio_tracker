@@ -106,3 +106,33 @@ input#price, input#quantity {
     padding: 0px;
     margin: 0 auto;
 }
+
+@media screen and (max-width: 1200px) {
+    div.container {
+        /* width: 99% !important; */
+        max-width: 1180px;
+    }
+}
+
+@media screen and (max-width: 570px) {
+
+    body {
+        overflow-x: hidden !important;
+    }
+
+    div#list-container {
+        width: 100%;
+        overflow-x: auto;
+        position: fixed;
+        margin-right: 5px;
+    }
+
+    div#list-container>div {
+        width: 560px;
+        /* padding: 0; */
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+}
+
